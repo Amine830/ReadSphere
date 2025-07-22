@@ -1,0 +1,45 @@
+name: Déploiement FTP ReadSphere
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.github/**'
+
+jobs:
+  deploy:
+    name: Déploiement
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v3
+
+      - name: Déploiement FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_REMOTE_PATH }}
+          local-dir: ./
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/.gitignore
+            **/.htaccess.example
+            **/.env.example
+            **/README.md
+            **/LICENSE
+            **/deploy-ftp-example.sh
+            **/logs/**
+            **/cache/**
+
+      - name: Vérification du déploiement
+        run: |
+          echo "Déploiement terminé avec succès !"
+          echo "URL du site: ${APP_URL:-Non spécifiée}"
