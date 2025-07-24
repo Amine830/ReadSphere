@@ -21,7 +21,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Annonce du chemin de déploiement (info)
-        run: echo "Déploiement dans : ${{ secrets.FTP_REMOTE_PATH }}"
+        run: |
+          echo "Déploiement dans : ${{ secrets.FTP_REMOTE_PATH }}"
 
       - name: Déploiement FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
