@@ -29,16 +29,17 @@ jobs:
           server-dir: ${{ secrets.FTP_REMOTE_PATH }}
           local-dir: ./
           exclude: |
+            .git*
             **/.git*
             **/.github/**
-            **/.gitignore
-            **/.htaccess.example
-            **/.env.example
-            **/README.md
-            **/LICENSE
-            **/deploy-ftp-example.sh
-            **/logs/**
-            **/cache/**
+            .gitignore
+            .env*
+            README.md
+            LICENSE
+            logs/**
+            cache/**
+            docs/**
+
 
       - name: Vérification du déploiement
         run: |
