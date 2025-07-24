@@ -1,38 +1,9 @@
 <?php
 
-/**
- * Enregistre un message dans le journal d'application
- * 
- * @param string $message Le message à journaliser
- * @param string $level Niveau de journalisation (info, warning, error, debug)
- * @param string $file Chemin personnalisé du fichier de log (optionnel)
- * @return bool True si l'écriture a réussi, false sinon
- */
-function log_message($message, $level = 'info', $file = null) {
-    // Niveaux de log valides
-    $valid_levels = ['info', 'warning', 'error', 'debug'];
-    
-    // S'assurer que le niveau est valide
-    $level = in_array(strtolower($level), $valid_levels) ? strtolower($level) : 'info';
-    
-    // Chemin par défaut du fichier de log
-    if ($file === null) {
-        $log_dir = dirname(__DIR__, 2) . '/logs';
-        
-        // Créer le dossier de logs s'il n'existe pas
-        if (!is_dir($log_dir)) {
-            mkdir($log_dir, 0755, true);
-        }
-        
-        $file = $log_dir . '/app_' . date('Y-m-d') . '.log';
-    }
-    
-    // Format du message de log
-    $timestamp = date('Y-m-d H:i:s');
-    $log_message = "[$timestamp] [$level] $message" . PHP_EOL;
-    
-    // Écrire dans le fichier de log
-    return file_put_contents($file, $log_message, FILE_APPEND | LOCK_EX) !== false;
+// La fonction log_message a été déplacée dans logger.php
+if (!function_exists('log_message')) {
+    // Inclure le logger si nécessaire
+    require_once __DIR__ . '/logger.php';
 }
 
 /**

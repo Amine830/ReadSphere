@@ -14,7 +14,8 @@ require_auth();
 // Vérifier que l'ID du livre est fourni
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     set_flash('Livre non trouvé', 'error');
-    redirect('dashboard.php');
+    // redirect('dashboard.php');
+    redirect('includes/error_pages/404.php');
 }
 
 $book_id = (int)$_GET['id'];
@@ -35,13 +36,13 @@ $book = $book_stmt->fetch();
 
 if (!$book) {
     set_flash('Livre non trouvé ou accès non autorisé', 'error');
-    redirect('dashboard.php');
+    redirect('includes/error_pages/404.php');
 }
 
 // Vérifier les permissions si ce n'est pas une édition admin
 if (!$is_admin_edit && $book['user_id'] != $user_id) {
     set_flash('Vous n\'êtes pas autorisé à modifier ce livre', 'error');
-    redirect('dashboard.php');
+    redirect('index.php');
 }
 
 $errors = [];

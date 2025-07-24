@@ -19,7 +19,8 @@ $book = get_book($book_id);
 // Vérifier si le livre existe
 if (!$book) {
     set_flash('Livre non trouvé', 'error');
-    redirect('index.php');
+    // redirect('index.php');
+    redirect('includes/error_pages/404.php');
 }
 
 // Vérifier si l'utilisateur a déjà aimé ce livre

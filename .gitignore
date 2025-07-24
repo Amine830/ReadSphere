@@ -13,6 +13,9 @@ database/bookreview.sql
 /composer.phar
 /composer.lock
 
+# Dossier git 
+.git/
+
 # Fichiers de logs
 /logs/*
 *.log

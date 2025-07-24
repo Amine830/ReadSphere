@@ -203,13 +203,6 @@
                                 </a>
                             </li>
                             
-                            <li class="nav-item d-none d-lg-block">
-                                <a class="nav-link btn-primary text-white" href="<?= url('add_book.php') ?>">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Ajouter un livre</span>
-                                </a>
-                            </li>
-                            
                             <?php if (is_admin()): ?>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle position-relative" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -259,6 +252,14 @@
                                 </ul>
                             </li>
                             <?php endif; ?>
+                            
+                            <li class="nav-item d-none d-lg-block">
+                                <a class="nav-link btn-primary text-white" href="<?= url('add_book.php') ?>">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Ajouter un livre</span>
+                                </a>
+                            </li>
+                            
                         <?php endif; ?>
                     </ul>
                     

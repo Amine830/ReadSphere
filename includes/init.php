@@ -15,18 +15,28 @@ if (!defined('BASE_PATH')) {
     define('BASE_PATH', $base_path);
 }
 
-// 3. Activer l'affichage des erreurs en fonction de l'environnement
+// 3. Définir l'environnement
 $is_dev = (getenv('APP_ENV') === 'development' || in_array($_SERVER['SERVER_ADDR'] ?? '', ['127.0.0.1', '::1']));
+define('IS_DEV', $is_dev);
 
-if ($is_dev) {
-    error_reporting(E_ALL);
-    ini_set('display_errors', '1');
-    ini_set('display_startup_errors', '1');
-} else {
-    error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE);
-    ini_set('display_errors', '0');
-    ini_set('display_startup_errors', '0');
+// 3.1 Définir le chemin des logs si non défini
+if (!defined('LOGS_PATH')) {
+    define('LOGS_PATH', ROOT_PATH . '/logs');
 }
+
+// 3.2 Créer le répertoire des logs s'il n'existe pas
+if (!is_dir(LOGS_PATH)) {
+    mkdir(LOGS_PATH, 0755, true);
+}
+
+// 3.3 Charger le système de journalisation
+require_once __DIR__ . '/logger.php';
+
+// 3.4 Configurer la gestion des erreurs
+setup_error_handling();
+
+// 3.5 Inclure le gestionnaire d'erreurs personnalisé
+require_once __DIR__ . '/error_handler.php';
 
 // 4. Définir le fuseau horaire
 date_default_timezone_set('Europe/Paris');
@@ -95,7 +105,8 @@ $requiredDirs = [
     CACHE_PATH . '/images',
     CACHE_PATH . '/views',
     UPLOADS_PATH . '/books',
-    UPLOADS_PATH . '/covers'
+    UPLOADS_PATH . '/covers',
+    LOGS_PATH  // Ajout du dossier de logs
 ];
 
 foreach ($requiredDirs as $dir) {
@@ -110,13 +121,33 @@ if (session_status() === PHP_SESSION_NONE) {
     // Inclure la configuration de session
     require_once __DIR__ . '/config.php';
     
-    // Configurer la session
-    if (function_exists('configure_session')) {
-        configure_session();
+    // Nettoyer la valeur de SESSION_LIFETIME (supprimer les commentaires et convertir en entier)
+    $lifetime = 1440; // Valeur par défaut de 24 minutes
+    if (isset($_ENV['SESSION_LIFETIME'])) {
+        $lifetime = (int) trim(explode('#', $_ENV['SESSION_LIFETIME'])[0]);
     }
+    
+    // Configurer les paramètres de session
+    session_set_cookie_params([
+        'lifetime' => $lifetime,
+        'path' => '/',
+        'domain' => $_SERVER['HTTP_HOST'] ?? null,
+        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+        'httponly' => true,
+        'samesite' => 'Lax'
+    ]);
+    
+    // Configurer le nom de la session
+    session_name($_ENV['SESSION_NAME'] ?? 'readsphere_session');
     
     // Démarrer la session
     session_start();
+    
+    // Régénérer l'ID de session pour prévenir les attaques de fixation de session
+    if (!isset($_SESSION['last_regeneration'])) {
+        session_regenerate_id(true);
+        $_SESSION['last_regeneration'] = time();
+    }
 }
 
 // 12. Inclure les classes utilitaires

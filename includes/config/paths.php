@@ -23,6 +23,7 @@ if (!defined('PATHS_LOADED')) {
     if (!defined('CACHE_PATH')) define('CACHE_PATH', $rootPath . '/cache');
     if (!defined('IMAGE_CACHE_PATH')) define('IMAGE_CACHE_PATH', CACHE_PATH . '/images');
     if (!defined('VIEW_CACHE_PATH')) define('VIEW_CACHE_PATH', CACHE_PATH . '/views');
+    if (!defined('LOGS_PATH')) define('LOGS_PATH', $rootPath . '/logs');
     
     // Définir les URLs
     if (!defined('BASE_URL')) define('BASE_URL', $basePath);

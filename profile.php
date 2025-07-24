@@ -32,7 +32,7 @@ $user = get_user_by_id($profile_id);
 if (!$user) {
     // Rediriger vers une page d'erreur 404
     header('HTTP/1.0 404 Not Found');
-    include_once 'templates/404.php';
+    include_once 'includes/error_pages/404.php';
     exit;
 }
 

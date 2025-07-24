@@ -776,15 +776,20 @@ function check_remember_me_token()
 /**
  * Supprime le cookie "Se souvenir de moi"
  * 
- * @return void
+ * @return bool True si le cookie a été supprimé, false sinon
  */
 function clear_remember_me_cookie()
 {
-    setcookie('remember_me', '', [
+    if (headers_sent($file, $line)) {
+        error_log("Impossible de supprimer le cookie 'remember_me' - Les en-têtes ont déjà été envoyés dans $file à la ligne $line");
+        return false;
+    }
+    
+    return setcookie('remember_me', '', [
         'expires' => time() - 3600,
         'path' => '/',
-        'domain' => '',
-        'secure' => true,
+        'domain' => $_SERVER['HTTP_HOST'] ?? '',
+        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
         'httponly' => true,
         'samesite' => 'Lax'
     ]);
@@ -793,11 +798,25 @@ function clear_remember_me_cookie()
 /**
  * Déconnecte l'utilisateur actuel
  * 
- * @return void
+ * @return bool True si la déconnexion a réussi, false sinon
  */
-function logout_user()
-{
+function logout_user() {
+    // Vérifier si les en-têtes ont déjà été envoyés
+    if (headers_sent($file, $line)) {
+        error_log("Impossible de déconnecter l'utilisateur - Les en-têtes ont déjà été envoyés dans $file à la ligne $line");
+        return false;
+    }
+    
+    // Vider le buffer de sortie pour éviter les problèmes d'en-têtes
+    while (ob_get_level() > 0) {
+        if (!@ob_end_clean()) {
+            error_log('Erreur lors du nettoyage du buffer de sortie');
+            return false;
+        }
+    }
+    
     // Détruire le jeton "Se souvenir de moi" s'il existe
+    $rememberMeDeleted = true;
     if (isset($_COOKIE['remember_me'])) {
         $token = $_COOKIE['remember_me'];
         
@@ -806,32 +825,46 @@ function logout_user()
             $pdo->prepare("DELETE FROM user_tokens WHERE token = ?")->execute([$token]);
         } catch (PDOException $e) {
             error_log('Erreur lors de la suppression du jeton de rappel : ' . $e->getMessage());
+            $rememberMeDeleted = false;
         }
         
         // Supprimer le cookie
-        setcookie('remember_me', '', time() - 3600, '/', '', isset($_SERVER['HTTPS']), true);
+        if (!clear_remember_me_cookie()) {
+            $rememberMeDeleted = false;
+        }
     }
     
-    // Supprimer toutes les variables de session
-    $_SESSION = [];
-    
-    // Supprimer le cookie de session
-    if (ini_get("session.use_cookies")) {
-        $params = session_get_cookie_params();
-        setcookie(session_name(), '', time() - 42000,
-            $params["path"], $params["domain"],
-            $params["secure"], $params["httponly"]
-        );
+    // Gestion de la session
+    $sessionDestroyed = true;
+    if (session_status() === PHP_SESSION_ACTIVE) {
+        // Supprimer toutes les variables de session
+        $_SESSION = [];
+        
+        // Supprimer le cookie de session
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(), 
+                '', 
+                [
+                    'expires' => time() - 42000,
+                    'path' => $params["path"],
+                    'domain' => $params["domain"],
+                    'secure' => $params["secure"],
+                    'httponly' => $params["httponly"],
+                    'samesite' => $params["samesite"] ?? 'Lax'
+                ]
+            );
+        }
+        
+        // Détruire la session
+        if (!session_destroy()) {
+            error_log('Erreur lors de la destruction de la session');
+            $sessionDestroyed = false;
+        }
     }
     
-    // Détruire la session
-    session_destroy();
-    
-    // Démarrer une nouvelle session propre
-    session_start();
-    
-    // Régénérer l'ID de session pour prévenir les attaques de fixation de session
-    session_regenerate_id(true);
+    return $rememberMeDeleted && $sessionDestroyed;
 }
 
 /**

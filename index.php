@@ -6,6 +6,49 @@
 // Inclure le fichier d'initialisation
 require_once __DIR__ . '/includes/init.php';
 
+// Vérifier si c'est une requête pour une URL personnalisée (gestion des 404)
+if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== '/ReadSphere/' && $_SERVER['REQUEST_URI'] !== '/ReadSphere/index.php') {
+    // Si c'est une requête pour un fichier qui n'existe pas
+    $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $script_name = dirname($_SERVER['SCRIPT_NAME']);
+    
+    // Nettoyer l'URI
+    $clean_uri = '/' . trim(str_replace($script_name, '', $request_uri), '/');
+    
+    // Liste des dossiers et fichiers autorisés
+    $allowed_paths = [
+        '/book.php',
+        '/login.php',
+        '/register.php',
+        '/dashboard.php',
+        '/add_book.php',
+        '/edit_book.php',
+        '/profile.php',
+        '/search.php',
+        '/api/'
+    ];
+    
+    // Vérifier si l'URI correspond à un fichier ou dossier existant
+    $is_valid_route = false;
+    foreach ($allowed_paths as $path) {
+        if (strpos($clean_uri, $path) === 0) {
+            $is_valid_route = true;
+            break;
+        }
+    }
+    
+    // Si ce n'est pas une route valide et que le fichier n'existe pas
+    if (!$is_valid_route && !file_exists(__DIR__ . $clean_uri) && !is_dir(__DIR__ . $clean_uri)) {
+        // Log l'erreur 404
+        error_log("Page non trouvée : " . $clean_uri);
+        
+        // Afficher la page d'erreur 404
+        http_response_code(404);
+        include __DIR__ . '/includes/error_pages/404.php';
+        exit;
+    }
+}
+
     $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
     $per_page = 6;
     

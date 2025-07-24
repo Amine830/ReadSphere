@@ -57,8 +57,26 @@ try {
  * @param string $path Chemin vers lequel rediriger (peut être absolu ou relatif)
  * @param int $statusCode Code HTTP pour la redirection (par défaut : 302)
  * @return void
+ * @throws RuntimeException Si les en-têtes ont déjà été envoyés
  */
 function redirect(string $path, int $statusCode = 302): void {
+    // Vérifier si les en-têtes ont déjà été envoyés
+    if (headers_sent($filename, $linenum)) {
+        error_log(sprintf(
+            'Impossible de rediriger vers %s - Les en-têtes ont déjà été envoyés dans %s à la ligne %d',
+            $path,
+            $filename,
+            $linenum
+        ));
+        
+        // Essayer une redirection JavaScript comme solution de secours
+        echo sprintf(
+            '<script>window.location.href = %s;</script>',
+            json_encode($path)
+        );
+        exit();
+    }
+    
     // Si le chemin commence par http:// ou https://, c'est une URL absolue
     if (strpos($path, 'http://') === 0 || strpos($path, 'https://') === 0) {
         $url = $path;
@@ -72,6 +90,12 @@ function redirect(string $path, int $statusCode = 302): void {
         $url = rtrim(BASE_PATH, '/') . '/' . ltrim($path, '/');
     }
     
+    // Vider le buffer de sortie pour éviter les problèmes d'en-têtes
+    if (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    // Effectuer la redirection
     header("Location: $url", true, $statusCode);
     exit();
 }
@@ -130,17 +154,4 @@ function is_valid_email(string $email): bool {
 }
 
 
-// Démarrer la session si elle n'est pas déjà démarrée
-if (session_status() === PHP_SESSION_NONE) {
-    session_set_cookie_params([
-        'lifetime' => $_ENV['SESSION_LIFETIME'] ?? 1440,
-        'path' => '/',
-        'domain' => $_SERVER['HTTP_HOST'] ?? null,
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
-        'httponly' => true,
-        'samesite' => 'Lax'
-    ]);
-    
-    session_name($_ENV['SESSION_NAME'] ?? 'bookreview_session');
-    session_start();
-}
+// La configuration de la session est maintenant gérée par init.php
