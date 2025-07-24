@@ -31,18 +31,25 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_REMOTE_PATH }}
-          local-dir: ./ 
+          local-dir: ./
           exclude: |
+            .git
             .git*
             **/.git*
+            **/.git/**
             **/.github/**
-            .gitignore
-            .env*
-            README.md
-            LICENSE
-            logs/**
-            cache/**
-            docs/**
+            **/.gitignore
+            **/.env*
+            **/README.md
+            **/LICENSE
+            **/logs/**
+            **/cache/**
+            **/docs/**
+            **/node_modules/**
+            **/vendor/**
+            **/*.sql
+            **/*.zip
+            **/*.tar.gz
 
       - name: Vérification du déploiement
         run: |
