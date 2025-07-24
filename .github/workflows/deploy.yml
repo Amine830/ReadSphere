@@ -20,6 +20,9 @@ jobs:
       - name: Checkout du code
         uses: actions/checkout@v3
 
+      - name: Annonce du chemin de déploiement (info)
+        run: echo "Déploiement dans : ${{ secrets.FTP_REMOTE_PATH }}"
+
       - name: Déploiement FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -27,7 +30,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_REMOTE_PATH }}
-          local-dir: ./
+          local-dir: ./ 
           exclude: |
             .git*
             **/.git*
@@ -40,8 +43,7 @@ jobs:
             cache/**
             docs/**
 
-
       - name: Vérification du déploiement
         run: |
           echo "Déploiement terminé avec succès !"
-          echo "URL du site: ${APP_URL:-Non spécifiée}"
+          echo "URL du site: ${{ secrets.APP_URL }}"
