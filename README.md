@@ -114,6 +114,61 @@ ReadSphere/
 - Durée de vie limitée des sessions
 - Protection contre le vol de session
 
+## 🗃️ Base de Données
+
+### Schéma de la Base de Données
+
+![Database Schema](database/read_sphere_db.png)
+
+### Tables Principales
+
+#### 1. `users`
+- Stocke les informations des utilisateurs (nom, email, mot de passe hashé, etc.)
+- Gère les rôles et les permissions
+- Suit les informations de connexion et le statut du compte
+
+#### 2. `books`
+- Contient les informations des livres (titre, auteur, genre, résumé)
+- Stocke les avis (ce qui a plu/déplu)
+- Gère les métadonnées (image, date de création, statut de modération)
+- Compteurs de likes et commentaires
+
+#### 3. `book_likes`
+- Enregistre les "j'aime" des utilisateurs sur les livres
+- Contraintes d'unicité pour éviter les doublons
+- Horodatage des interactions
+
+#### 4. `comments`
+- Gère les commentaires des utilisateurs sur les livres
+- Stocke le contenu, l'auteur et la date
+- Lié aux livres et aux utilisateurs
+
+#### 5. `comment_likes`
+- Enregistre les "j'aime" sur les commentaires
+- Système de vote similaire à `book_likes`
+
+#### 6. `moderation_logs`
+- Historique des actions de modération
+- Suit les suppressions, approbations et rejets
+- Enregistre les modérateurs et les raisons
+
+#### 7. `notifications`
+- Gère les notifications utilisateur
+- Suit les interactions sociales (mentions, réponses, etc.)
+- Marque les notifications comme lues/non lues
+
+### Relations Clés
+- Un utilisateur peut ajouter plusieurs livres
+- Un livre appartient à un utilisateur
+- Les livres peuvent recevoir plusieurs commentaires et likes
+- Les commentaires peuvent être likés par plusieurs utilisateurs
+- Les actions de modération sont liées aux utilisateurs et au contenu
+
+### Index et Performances
+- Index sur les clés étrangères pour les jointures rapides
+- Index sur les champs de recherche fréquents (titres, noms d'utilisateur)
+- Compteurs mis à jour automatiquement pour éviter les requêtes COUNT coûteuses
+
 ## 👥 Rôles et Permissions
 
 ### Utilisateur Standard
