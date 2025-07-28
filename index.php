@@ -105,9 +105,22 @@ if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] !== '/ReadSphere/'
                         <p class="text-gray-700 mb-3 line-clamp-3">
                             <?= !empty($book['summary']) ? nl2br(htmlspecialchars($book['summary'])) : 'Aucun résumé fourni.' ?>
                         </p>
-                        <div class="flex justify-between items-center text-sm text-gray-500">
-                            <span><i class="far fa-user mr-1"></i> <?= htmlspecialchars($book['author_username']) ?></span>
-                            <span><i class="far fa-calendar-alt mr-1"></i> <?= date('d/m/Y', strtotime($book['created_at'])) ?></span>
+                        <div class="mt-auto pt-3 border-t border-gray-100">
+                            <div class="flex items-center justify-between text-sm text-gray-500">
+                                <div class="flex items-center">
+                                    <i class="far fa-user mr-1"></i>
+                                    <span><?= htmlspecialchars($book['author_username']) ?></span>
+                                </div>
+                                <div class="flex items-center">
+                                    <i class="far fa-comment-alt mr-1"></i>
+                                    <span class="mr-2"><?= $book['comment_count'] ?? 0 ?></span>
+                                    <i class="fas fa-heart text-red-500 mr-1"></i>
+                                    <span><?= $book['like_count'] ?? 0 ?></span>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-400 mt-1">
+                                <i class="far fa-calendar-alt mr-1"></i> <?= date('d/m/Y', strtotime($book['created_at'])) ?>
+                            </div>
                         </div>
                     </div>
                 </div>

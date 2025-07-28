@@ -11,7 +11,7 @@ require_once __DIR__ . '/../includes/init.php';
 
 // Vérifier que l'utilisateur est administrateur
 if (!is_admin()) {
-    header('Location: ' . BASE_PATH . '/login.php'); 
+    header('Location: ' . url('login.php')); 
     exit;
 }
 
