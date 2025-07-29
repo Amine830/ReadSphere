@@ -4,6 +4,7 @@
  * Page d'inscription
  */
 
+// Désactiver l'affichage des erreurs en production
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 
@@ -73,66 +74,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Affichage du formulaire
 $page_title = 'Inscription';
-require_once 'templates/header.php';
+require_once 'templates/auth_header.php';
 ?>
 
-<div class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-    <h1 class="text-2xl font-bold mb-6">Créer un compte</h1>
-    
+<form method="POST" action="signup.php" class="space-y-4">
     <?php if (!empty($errors['general'])): ?>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            <?= htmlspecialchars($errors['general']) ?>
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle h-5 w-5 text-red-500"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm"><?= htmlspecialchars($errors['general']) ?></p>
+                </div>
+            </div>
         </div>
     <?php endif; ?>
     
-    <form method="POST" action="signup.php" class="space-y-4">
-        <div>
-            <label for="username" class="block text-sm font-medium text-gray-700">Nom d'utilisateur</label>
-            <input type="text" id="username" name="username" value="<?= htmlspecialchars($form_data['username']) ?>" 
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-            <?php if (!empty($errors['username'])): ?>
-                <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['username']) ?></p>
-            <?php endif; ?>
-        </div>
-        
-        <div>
-            <label for="email" class="block text-sm font-medium text-gray-700">Adresse email</label>
-            <input type="email" id="email" name="email" value="<?= htmlspecialchars($form_data['email']) ?>" 
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-            <?php if (!empty($errors['email'])): ?>
-                <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['email']) ?></p>
-            <?php endif; ?>
-        </div>
-        
-        <div>
-            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-            <input type="password" id="password" name="password" 
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-            <?php if (!empty($errors['password'])): ?>
-                <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['password']) ?></p>
-            <?php endif; ?>
-        </div>
-        
-        <div>
-            <label for="password_confirm" class="block text-sm font-medium text-gray-700">Confirmer le mot de passe</label>
-            <input type="password" id="password_confirm" name="password_confirm" 
-                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-            <?php if (!empty($errors['password_confirm'])): ?>
-                <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['password_confirm']) ?></p>
-            <?php endif; ?>
-        </div>
-        
-        <div>
-            <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                S'inscrire
-            </button>
-        </div>
-    </form>
-    
-    <div class="mt-4 text-center text-sm text-gray-600">
-        Déjà inscrit ? 
-        <a href="login.php" class="font-medium text-blue-600 hover:text-blue-500">Se connecter</a>
+    <div>
+        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Nom d'utilisateur</label>
+        <input type="text" id="username" name="username" value="<?= htmlspecialchars($form_data['username']) ?>" 
+               class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+               required>
+        <?php if (!empty($errors['username'])): ?>
+            <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['username']) ?></p>
+        <?php endif; ?>
     </div>
-</div>
+    
+    <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Adresse email</label>
+        <input type="email" id="email" name="email" value="<?= htmlspecialchars($form_data['email']) ?>" 
+               class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+               required>
+        <?php if (!empty($errors['email'])): ?>
+            <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['email']) ?></p>
+        <?php endif; ?>
+    </div>
+    
+    <div>
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+        <div class="relative">
+            <input type="password" id="password" name="password" 
+                   class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+                   required>
+        </div>
+        <p class="mt-1 text-xs text-gray-500">Le mot de passe doit contenir au moins 8 caractères.</p>
+        <?php if (!empty($errors['password'])): ?>
+            <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['password']) ?></p>
+        <?php endif; ?>
+    </div>
+    
+    <div>
+        <label for="password_confirm" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le mot de passe</label>
+        <input type="password" id="password_confirm" name="password_confirm" 
+               class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" 
+               required>
+        <?php if (!empty($errors['password_confirm'])): ?>
+            <p class="mt-1 text-sm text-red-600"><?= htmlspecialchars($errors['password_confirm']) ?></p>
+        <?php endif; ?>
+    </div>
+    
+    <div class="pt-2">
+        <button type="submit" 
+                class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+            Créer mon compte
+        </button>
+    </div>
+    
+    <div class="text-xs text-gray-500 mt-3 text-center">
+        En vous inscrivant, vous acceptez nos <a href="#" class="text-blue-600 hover:text-blue-500">Conditions d'utilisation</a> 
+        et notre <a href="#" class="text-blue-600 hover:text-blue-500">Politique de confidentialité</a>.
+    </div>
+</form>
 
-<?php require_once 'templates/footer.php'; ?>
+<?php require_once 'templates/auth_footer.php'; ?>

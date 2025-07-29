@@ -179,7 +179,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
             <div class="container">
                 <a class="navbar-brand" href="<?= url('') ?>">
-                    <i class="fas fa-book-reader"></i>
+                    <img src="<?= url('public/assets/logo/logo_remake_bg.png') ?>" alt="ReadSphere Logo" style="height: 50px; width: auto;">
                     <span>ReadSphere</span>
                 </a>
                 
