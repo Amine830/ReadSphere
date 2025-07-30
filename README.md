@@ -26,6 +26,16 @@ ReadSphere est une application web complète développée en PHP natif avec une 
 - Flux d'activité des utilisateurs suivis
 - Notifications par email pour les interactions
 
+## 📸 Captures d'écran
+
+<div align="center">
+  <img src="public/assets/screenshots/im1.png" alt="Page d'accueil">
+  <img src="public/assets/screenshots/im3.png" alt="Page de profil">
+  <img src="public/assets/screenshots/im14.png" alt="Page de profil">
+</div>
+
+> *Voir toutes les captures d'écran dans le dossier [public/assets/screenshots/](public/assets/screenshots/)*
+
 ## 🛠️ Architecture Technique
 
 ### Backend
