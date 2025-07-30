@@ -4,6 +4,10 @@ ReadSphere est une application web complète développée en PHP natif avec une 
 
 ## 🌟 Fonctionnalités Principales
 
+### 📜 Pages Légales
+- **Conditions Générales d'Utilisation** : Détaille les règles d'utilisation de la plateforme, les droits et responsabilités des utilisateurs. Accessible depuis le formulaire d'inscription ou directement via [/terms.php](terms.php).
+- **Politique de Confidentialité** : Explique comment les données personnelles sont collectées, utilisées et protégées, conformément au RGPD. Accessible depuis le formulaire d'inscription ou directement via [/privacy.php](privacy.php).
+
 ### 👤 Gestion des Utilisateurs
 - Système d'inscription et d'authentification sécurisé
 - Profils personnalisables avec avatars

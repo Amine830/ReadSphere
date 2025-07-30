@@ -142,8 +142,8 @@ require_once 'templates/auth_header.php';
     </div>
     
     <div class="text-xs text-gray-500 mt-3 text-center">
-        En vous inscrivant, vous acceptez nos <a href="#" class="text-blue-600 hover:text-blue-500">Conditions d'utilisation</a> 
-        et notre <a href="#" class="text-blue-600 hover:text-blue-500">Politique de confidentialité</a>.
+        En vous inscrivant, vous acceptez nos <a href="<?= url('terms.php') ?>" class="text-blue-600 hover:text-blue-500 transition-colors" target="_blank">Conditions d'utilisation</a> 
+        et notre <a href="<?= url('privacy.php') ?>" class="text-blue-600 hover:text-blue-500 transition-colors" target="_blank">Politique de confidentialité</a>.
     </div>
 </form>
 
